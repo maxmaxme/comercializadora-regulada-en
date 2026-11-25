@@ -8,9 +8,9 @@ For Naturgy's main customer area (omega.naturgy.es), see [naturgy-en](https://gi
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) (or [Violentmonkey](https://violentmonkey.github.io/)). In Chrome, also turn on **Allow User Scripts** in the extension's details page.
 2. Install the script: **https://raw.githubusercontent.com/maxmaxme/comercializadora-regulada-en/main/comercializadora-regulada-en.user.js**
-3. Open the customer area with the site language set to **Español** (the default) — it's in English.
+3. Open the customer area — it's in English.
 
-Auto-updates via `@updateURL`. To get Spanish back, disable the script.
+Auto-updates via `@updateURL`. The script adds **English** to the site's language menu; picking Español, Català, Galego or Euskera there turns the translation off, picking English turns it back on (remembered per browser).
 
 ## How it works
 
@@ -18,7 +18,8 @@ The site is server-rendered and has no English locale: its language menu offers 
 
 ## Caveats
 
-- Only Spanish is translated. With the site set to Catalan, Galician or Basque, nothing matches.
+- English is the Spanish site translated in the browser, so choosing it switches the site to Spanish (`?lang=es`).
+- Buttons that send their label with a form (e.g. "Dar de alta") show English but still send the original Spanish value, so the server sees no difference.
 - Text is matched whole, so strings that embed changing data (dates in banners, amounts, statuses not yet seen) stay Spanish until added to `en.json`.
 - Pages only reachable in states the author's account hasn't been in (bills, payments, open requests) may have untranslated text. PRs welcome.
 - Third-party widgets (cookie banner, chatbot) and PDFs stay Spanish.

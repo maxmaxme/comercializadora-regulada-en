@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Comercializadora Regulada Área Clientes in English
 // @namespace    https://github.com/maxmaxme/comercializadora-regulada-en
-// @version      1.1.0
+// @version      1.2.0
 // @description  Translates the areaclientes.comercializadoraregulada.es customer area (Naturgy's regulated gas & electricity supplier) into English.
 // @author       maxmaxme
 // @match        https://areaclientes.comercializadoraregulada.es/*
@@ -13,6 +13,28 @@
 // ==/UserScript==
 (() => {
   'use strict';
+
+  // English goes into the site's language menu. It is the Spanish session translated here,
+  // so it links to ?lang=es and turns the script on; any other language turns it off.
+  const ENABLED_KEY = 'comercializadora-regulada-en';
+  let enabled = true;
+  try { enabled = localStorage.getItem(ENABLED_KEY) !== 'off'; } catch { /* storage blocked: stay on */ }
+  const setEnabled = (on) => { try { localStorage.setItem(ENABLED_KEY, on ? 'on' : 'off'); } catch { /* ignore */ } };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const spanish = document.querySelector('a[href*="lang=es"]');
+    if (!spanish) return;
+    for (const link of document.querySelectorAll('a[href*="lang="]')) link.addEventListener('click', () => setEnabled(false));
+    const item = spanish.parentElement.cloneNode(true);
+    const english = item.querySelector('a');
+    english.textContent = 'English';
+    english.setAttribute('xml:lang', 'en');
+    english.addEventListener('click', () => setEnabled(true));
+    item.classList.toggle('active', enabled);
+    if (enabled) spanish.parentElement.classList.remove('active');
+    spanish.parentElement.before(item);
+  });
+  if (!enabled) return;
 
   // The site has no English locale (`?lang=en` falls back to Spanish), so the Spanish
   // pages are translated in the DOM: a text node or attribute whose whitespace-
@@ -45,7 +67,10 @@
       if (attr === 'value' && !(el.type === 'submit' || el.type === 'button')) continue;
       const current = el.getAttribute(attr);
       const english = current && lookup(current);
-      if (english !== undefined && english !== current) el.setAttribute(attr, english);
+      if (english === undefined || english === current) continue;
+      // A named submit button posts its value (b-alta=Dar de alta); keep the original for the server.
+      if (attr === 'value' && el.name) el.dataset.originalValue ??= current;
+      el.setAttribute(attr, english);
     }
     // Country lists are <option value="ES">España</option>: ISO codes, named by the browser.
     if (el.tagName === 'OPTION' && /^[A-Z]{2}$/.test(el.value) && el.parentElement?.options?.length > 100) {
@@ -71,6 +96,14 @@
       }
     }
   }).observe(document, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRIBUTES });
+
+  // Puts the Spanish value of a translated submit button back into what the form sends.
+  // `formdata` doesn't bubble, hence the capture listener.
+  document.addEventListener('formdata', (e) => {
+    for (const el of e.target.querySelectorAll('[data-original-value]')) {
+      if (e.formData.has(el.name)) e.formData.set(el.name, el.dataset.originalValue);
+    }
+  }, true);
 
   document.addEventListener('DOMContentLoaded', () => {
     // The parser can grow a text node after it was first inserted, past the observer.

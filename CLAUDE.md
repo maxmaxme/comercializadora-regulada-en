@@ -12,6 +12,10 @@ A legacy server-rendered Java app (`/ovh-web/*.gas`, jQuery). The language is a 
 
 `en.json` maps Spanish text (whitespace-normalised, trimmed) to English. A `MutationObserver` from document-start translates text nodes, `placeholder`/`title`/`alt`/`aria-label` and submit/button `value`s whose text is a key; a final pass on `DOMContentLoaded` covers text nodes the parser grew after insertion and the `<title>`. Surrounding whitespace is kept, since it separates text from adjacent links. Country `<select>`s (>100 options, ISO-code values) are renamed with `Intl.DisplayNames`. Writes happen only when the value changes; an unconditional write re-queues a mutation and loops forever (the bug naturgy-en 1.0.0 had).
 
+Named submit inputs post their `value` (`b-alta=Dar de alta`, `b-modificar`, `b-enviar`, `b-continuar`, `b-aplicar`), and the forms are plain native submits. The script keeps the Spanish value in `data-original-value` and a capture `formdata` listener puts it back into the submitted data; 1.1.0 and earlier posted the English label instead. `new FormData(form, button)` fires the same event, so it checks this without submitting.
+
+The script injects an **English** item into the site's language menu (`ul.submenu-user-blanc`, cloned from the Español `<li>`, linking to `?lang=es`). Clicking it stores `on` under localStorage key `comercializadora-regulada-en`; clicking any other language stores `off`, and the script then only adds the menu item and translates nothing.
+
 Keys can be scoped to a page: `"MyContracts.gas › En curso"` (path after `/ovh-web/`, then ` › `) wins over the global `"En curso"` on that page only. Use it for ambiguous words ("En curso" is Active for a contract, In progress elsewhere) and for sentence fragments split by links or `<strong>` (`"La"`, `"El"`, `"Recibir"`), whose English is written to read right in one sentence; give fragments no global entry unless they make sense alone. Pages reached by redirect (`Home.gas`, `/ovh-web/`) end on `MyOfficeHome.gas`, so the path is stable.
 
 ## Keeping `en.json` in sync

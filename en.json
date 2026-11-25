@@ -306,5 +306,7 @@
  "CustomerService/ViewCreateSR.gas › Consulta": "See",
  "CustomerService/BonoSocial.gas › Solicitar": "Apply",
  "MyData/PreferencesData.gas › Realizarte un": "Build a",
- "MyData/PreferencesData.gas › con fines comerciales": "of you for commercial purposes"
+ "MyData/PreferencesData.gas › con fines comerciales": "of you for commercial purposes",
+ "Se ha producido un error en el sistema y no se ha podido realizar el alta de los contratos seleccionados. Vuelve a intentarlo más tarde": "A system error occurred and the selected contracts could not be signed up. Please try again later",
+ "Se ha producido un error en el sistema y no se ha podido realizar el alta de los contratos seleccionados. Vuelve a intentarlo más tarde.": "A system error occurred and the selected contracts could not be signed up. Please try again later."
 }
