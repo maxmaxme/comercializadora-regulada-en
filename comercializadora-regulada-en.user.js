@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Comercializadora Regulada Área Clientes in English
 // @namespace    https://github.com/maxmaxme/comercializadora-regulada-en
-// @version      1.2.0
+// @version      1.2.1
 // @description  Translates the areaclientes.comercializadoraregulada.es customer area (Naturgy's regulated gas & electricity supplier) into English.
 // @author       maxmaxme
 // @match        https://areaclientes.comercializadoraregulada.es/*
