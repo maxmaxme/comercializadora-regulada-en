@@ -31,11 +31,13 @@
     const doc = new DOMParser().parseFromString(await (await fetch('/ovh-web/' + page)).text(), 'text/html');
     doc.querySelectorAll('script, style, noscript').forEach((el) => el.remove());
     const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
-    const add = (s) => { s = norm(s ?? ''); if (isText(s) && !(s in known) && !found.has(s)) found.set(s, page); };
+    // A string counts as covered by a global key or by a key scoped to this page.
+    const add = (s) => { s = norm(s ?? ''); if (isText(s) && !(s in known) && !(`${page} › ${s}` in known) && !found.has(s)) found.set(s, page); };
     for (let node = walker.nextNode(); node; node = walker.nextNode()) add(node.data);
     for (const el of doc.querySelectorAll('[placeholder], [title], [alt], [aria-label]')) ATTRIBUTES.forEach((a) => add(el.getAttribute(a)));
     for (const el of doc.querySelectorAll('input[type=submit], input[type=button]')) add(el.value);
-    for (const opt of doc.querySelectorAll('option')) add(opt.textContent);
+    // Country lists (ISO-code values) are named by the browser, not en.json.
+    for (const opt of doc.querySelectorAll('option')) if (!(/^[A-Z]{2}$/.test(opt.value) && opt.parentElement?.options?.length > 100)) add(opt.textContent);
   }
   const todo = Object.fromEntries([...found.keys()].map((s) => [s, '']));
   console.table([...found].map(([s, page]) => ({ page, s })));

@@ -14,7 +14,7 @@ Auto-updates via `@updateURL`. To get Spanish back, disable the script.
 
 ## How it works
 
-The site is server-rendered and has no English locale: its language menu offers Spanish, Catalan, Galician and Basque, and `?lang=en` falls back to Spanish. So the script translates the Spanish pages in the DOM: any text node, button label, `placeholder`, `title`, `alt` or `aria-label` whose text (whitespace-normalised) is a key of [`en.json`](en.json) gets the English value. Country lists use their ISO codes and get English names from the browser (`Intl.DisplayNames`).
+The site is server-rendered and has no English locale: its language menu offers Spanish, Catalan, Galician and Basque, and `?lang=en` falls back to Spanish. So the script translates the Spanish pages in the DOM: any text node, button label, `placeholder`, `title`, `alt` or `aria-label` whose text (whitespace-normalised) is a key of [`en.json`](en.json) gets the English value. A key can be scoped to one page (`"MyContracts.gas › En curso": "Active"`), for words whose meaning depends on where they appear and for sentence fragments split by links. Country lists use their ISO codes and get English names from the browser (`Intl.DisplayNames`).
 
 ## Caveats
 

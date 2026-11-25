@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Comercializadora Regulada Área Clientes in English
 // @namespace    https://github.com/maxmaxme/comercializadora-regulada-en
-// @version      1.0.0
+// @version      1.1.0
 // @description  Translates the areaclientes.comercializadoraregulada.es customer area (Naturgy's regulated gas & electricity supplier) into English.
 // @author       maxmaxme
 // @match        https://areaclientes.comercializadoraregulada.es/*
@@ -21,7 +21,13 @@
   const ATTRIBUTES = ['placeholder', 'title', 'alt', 'aria-label', 'value'];
   const COUNTRIES = new Intl.DisplayNames(['en'], { type: 'region' });
 
-  const lookup = (text) => EN[text.replace(/\s+/g, ' ').trim()];
+  // Ambiguous words and sentence fragments are keyed per page ("MyContracts.gas › En curso"),
+  // so a translation written for one context doesn't leak into another.
+  const PAGE = location.pathname.replace(/^\/ovh-web\//, '');
+  const lookup = (text) => {
+    const key = text.replace(/\s+/g, ' ').trim();
+    return EN[`${PAGE} › ${key}`] ?? EN[key];
+  };
 
   // Writing an unchanged value still queues a mutation and would re-trigger the
   // observer forever, so only real changes are written.

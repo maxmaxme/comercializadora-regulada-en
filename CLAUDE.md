@@ -12,7 +12,7 @@ A legacy server-rendered Java app (`/ovh-web/*.gas`, jQuery). The language is a 
 
 `en.json` maps Spanish text (whitespace-normalised, trimmed) to English. A `MutationObserver` from document-start translates text nodes, `placeholder`/`title`/`alt`/`aria-label` and submit/button `value`s whose text is a key; a final pass on `DOMContentLoaded` covers text nodes the parser grew after insertion and the `<title>`. Surrounding whitespace is kept, since it separates text from adjacent links. Country `<select>`s (>100 options, ISO-code values) are renamed with `Intl.DisplayNames`. Writes happen only when the value changes; an unconditional write re-queues a mutation and loops forever (the bug naturgy-en 1.0.0 had).
 
-Some keys are fragments of a sentence split by links or `<strong>` (`"Recibir"`, `"La"`, `"El"`); their English is written to read right in that sentence, not standalone.
+Keys can be scoped to a page: `"MyContracts.gas › En curso"` (path after `/ovh-web/`, then ` › `) wins over the global `"En curso"` on that page only. Use it for ambiguous words ("En curso" is Active for a contract, In progress elsewhere) and for sentence fragments split by links or `<strong>` (`"La"`, `"El"`, `"Recibir"`), whose English is written to read right in one sentence; give fragments no global entry unless they make sense alone. Pages reached by redirect (`Home.gas`, `/ovh-web/`) end on `MyOfficeHome.gas`, so the path is stable.
 
 ## Keeping `en.json` in sync
 
